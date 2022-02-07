@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(leo_fw)
 
 find_package(catkin REQUIRED COMPONENTS
+  dynamic_reconfigure
   leo_msgs
   nav_msgs
   roscpp
@@ -10,13 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
-catkin_package(
-  CATKIN_DEPENDS
-    leo_msgs
-    nav_msgs
-    roscpp
-    sensor_msgs
+generate_dynamic_reconfigure_options(
+  cfg/FirmwareMessageConverter.cfg
 )
+
+catkin_package()
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
@@ -25,6 +24,10 @@ include_directories(
 
 add_executable(firmware_message_converter
   src/firmware_message_converter.cpp
+)
+
+add_dependencies(firmware_message_converter
+  ${PROJECT_NAME}_gencfg
 )
 
 target_link_libraries(firmware_message_converter

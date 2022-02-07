@@ -10,6 +10,9 @@
 #include "leo_msgs/WheelOdom.h"
 #include "leo_msgs/WheelStates.h"
 
+#include "dynamic_reconfigure/server.h"
+#include "leo_fw/FirmwareMessageConverterConfig.h"
+
 static ros::Subscriber wheel_states_sub;
 static ros::Publisher joint_states_pub;
 static bool joint_states_advertised = false;
@@ -33,7 +36,10 @@ std::vector<double> imu_angular_velocity_covariance_diagonal = {
     0.000001, 0.000001, 0.00001};
 std::vector<double> imu_linear_acceleration_covariance_diagonal = {0.001, 0.001,
                                                                    0.001};
-std::string tf_frame_prefix = "";                                                                   
+std::string tf_frame_prefix = "";
+
+void reconfigure_callback(leo_fw::FirmwareMessageConverterConfig &config,
+                          uint32_t level) {}
 
 void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("robot_frame_id", robot_frame_id);
@@ -47,7 +53,7 @@ void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("imu_linear_acceleration_covariance_diagonal",
                imu_linear_acceleration_covariance_diagonal);
   pnh.getParam("tf_frame_prefix", tf_frame_prefix);
-  
+
   robot_frame_id = tf_frame_prefix + robot_frame_id;
   odom_frame_id = tf_frame_prefix + odom_frame_id;
   imu_frame_id = tf_frame_prefix + imu_frame_id;
@@ -113,6 +119,9 @@ int main(int argc, char **argv) {
   ros::NodeHandle pnh("~");
 
   load_parameters(pnh);
+
+  dynamic_reconfigure::Server<leo_fw::FirmwareMessageConverterConfig> server;
+  server.setCallback(boost::bind(&reconfigure_callback, _1, _2));
 
   ros::AsyncSpinner spinner(4);
   spinner.start();

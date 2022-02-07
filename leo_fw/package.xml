@@ -29,10 +29,13 @@
   <exec_depend>std_srvs</exec_depend>
   <exec_depend>rosmon_msgs</exec_depend>
 
-  <depend>roscpp</depend>
-  <depend>sensor_msgs</depend>
-  <depend>nav_msgs</depend>
+  <build_depend>dynamic_reconfigure</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>leo_msgs</build_depend>
 
-  <depend>leo_msgs</depend>
+  <exec_depend>dynamic_reconfigure</exec_depend>
+  <exec_depend>roscpp</exec_depend>
 
 </package>
