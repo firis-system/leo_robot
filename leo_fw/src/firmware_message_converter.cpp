@@ -35,6 +35,8 @@ std::vector<double> imu_linear_acceleration_covariance_diagonal = {0.001, 0.001,
                                                                    0.001};
 std::string tf_frame_prefix = "";
 
+double fw_msgs_converted_rate = 2;
+
 void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("robot_frame_id", robot_frame_id);
   pnh.getParam("odom_frame_id", odom_frame_id);
@@ -47,6 +49,7 @@ void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("imu_linear_acceleration_covariance_diagonal",
                imu_linear_acceleration_covariance_diagonal);
   pnh.getParam("tf_frame_prefix", tf_frame_prefix);
+  pnh.getParam("fw_msgs_converted_rate", fw_msgs_converted_rate);
 
   robot_frame_id = tf_frame_prefix + robot_frame_id;
   odom_frame_id = tf_frame_prefix + odom_frame_id;
@@ -123,7 +126,7 @@ int main(int argc, char **argv) {
       ros::names::resolve("firmware/wheel_odom");
   const std::string imu_topic = ros::names::resolve("firmware/imu");
 
-  ros::Rate rate(2);
+  ros::Rate rate(fw_msgs_converted_rate);
   while (ros::ok()) {
     // Shutdown inactive topics
     if (joint_states_advertised && wheel_states_sub.getNumPublishers() == 0) {
